@@ -4,21 +4,19 @@ import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 public class LocationService extends Service implements LocationListener {
+    int intial = 0;
+    double previousLat ;
+    double previousLong ;
 
     public class locationServiceBinder extends Binder {
 
@@ -83,9 +81,26 @@ public class LocationService extends Service implements LocationListener {
             double longitude=location.getLongitude();
             String msg="New Latitude: "+latitude + "New Longitude: "+longitude;
             Log.i("trackerapp",msg);
-        }
 
-        @Override
+            if(intial == 0){
+
+              intial++;
+              previousLat = location.getLatitude();
+              previousLong = location.getLongitude();
+
+            }else{
+
+                // calculate difference between old location and new location
+                calculateDistance(latitude,longitude);
+
+                Log.i("trackerapp","speed" + location.getSpeed() * 0.514);
+            }
+
+    }
+
+
+
+    @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
 
         }
@@ -99,7 +114,36 @@ public class LocationService extends Service implements LocationListener {
         public void onProviderDisabled(String provider) {
 
         }
-    }
+
+        private void calculateDistance(double newLat,double newLong) {
+
+
+           Location prevLocation = new Location("point A");
+           Location newLocation  = new Location("point B");
+
+           newLocation.setLatitude(newLat);
+           newLocation.setLongitude(newLong);
+
+           prevLocation.setLatitude(previousLat);
+           prevLocation.setLongitude(previousLong);
+
+
+           float[] results = new float[1];
+            Location.distanceBetween(
+                    previousLat,previousLong,
+                    newLat ,newLong, results);
+
+
+            Log.i("trackerapp","distance to : " + prevLocation.distanceTo(newLocation));
+            Log.i("trackerapp","distance between : " + String.valueOf(results[0]));
+
+
+            //if(newLocation.hasSpeed()){
+               // Log.i("trackerapp","speed : " + String.valueOf(newLocation.getSpeed()));
+
+            }
+        }
+
 
 
 

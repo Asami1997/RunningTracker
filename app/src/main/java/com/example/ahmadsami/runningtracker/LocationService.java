@@ -1,6 +1,5 @@
 package com.example.ahmadsami.runningtracker;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +59,8 @@ public class LocationService extends Service implements LocationListener {
         }
 
     }
+
+
 
 
    // location listener implementation
@@ -142,7 +143,28 @@ public class LocationService extends Service implements LocationListener {
                // Log.i("trackerapp","speed : " + String.valueOf(newLocation.getSpeed()));
 
             }
-        }
+
+    // starts adding user
+    public void addEntry () {
+
+
+            DB_Handler dbHandler = new DB_Handler(this,"history", null,1);
+
+            // creates a new recipe object
+            //Entry_Sructure entry_sructure = new Recipe(recipeTitle,recipeContent);
+
+            //dbHandler.addRecipe(recipe);
+
+            // resets textviews
+            //recipeTitleET.setText("");
+            //recipeContentET.setText("");
+            //recipeIDET.setText("");
+
+
+    }
+
+
+}
 
 
 

@@ -12,11 +12,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     public LocationService locationService;
+
     public final static int  MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
@@ -62,11 +64,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    public ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
 
                 locationService = ((LocationService.locationServiceBinder) service).getService();
-
                 Log.i("trackerapp","in service connection app");
         }
 
@@ -76,13 +77,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
-
-    public void onServiceDisconnected(ComponentName className) {
-        if (className.getClassName().equals("LocationService")) {
-            locationService = null;
-        }
-    }
 
 
     @Override
@@ -107,6 +101,17 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    // user started running
+    public void startClicked(View view) {
+
+        locationService.addEntry();
+
+    }
+    // user stop running
+    public void stopClicked(View view) {
+
     }
 }
 

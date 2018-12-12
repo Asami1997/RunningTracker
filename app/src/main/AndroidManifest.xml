@@ -26,8 +26,8 @@
         <service
             android:name=".LocationService"
             android:enabled="true"
-            android:exported="false"
-            ></service>
+            android:exported="false">
+        </service>
     </application>
 
 </manifest>

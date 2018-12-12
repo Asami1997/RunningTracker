@@ -16,7 +16,7 @@ public class LocationService extends Service implements LocationListener {
     int intial = 0;
     double previousLat ;
     double previousLong ;
-
+    private final IBinder mBinder = new locationServiceBinder();
     public class locationServiceBinder extends Binder {
 
         LocationService getService() {
@@ -70,7 +70,7 @@ public class LocationService extends Service implements LocationListener {
         Log.i("trackerapp","onbind");
 
         startUpdatingLocation();
-        return null;
+        return mBinder;
     }
 
 
@@ -148,6 +148,7 @@ public class LocationService extends Service implements LocationListener {
     public void addEntry () {
 
 
+            Log.i("trackerapp","in addEntry function");
             DB_Handler dbHandler = new DB_Handler(this,"history", null,1);
 
             // creates a new recipe object
@@ -163,7 +164,11 @@ public class LocationService extends Service implements LocationListener {
 
     }
 
+    // starts getting information about location as the user is running
+    public void runningStarted(){
 
+
+    }
 }
 
 

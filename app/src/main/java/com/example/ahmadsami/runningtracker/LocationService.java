@@ -12,10 +12,19 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.Date;
+
 public class LocationService extends Service implements LocationListener {
     int intial = 0;
     double previousLat ;
     double previousLong ;
+    float totalDistance;
+    float totalTime;
+    int totalSteps;
+    String date;
+    Location startingLocation ;
+    Location lastLocation ;
+    Date intitalTime;
     private final IBinder mBinder = new locationServiceBinder();
     public class locationServiceBinder extends Binder {
 
@@ -69,7 +78,6 @@ public class LocationService extends Service implements LocationListener {
 
         Log.i("trackerapp","onbind");
 
-        startUpdatingLocation();
         return mBinder;
     }
 
@@ -88,9 +96,10 @@ public class LocationService extends Service implements LocationListener {
               intial++;
               previousLat = location.getLatitude();
               previousLong = location.getLongitude();
-
+              startingLocation = new Location("start");
+              startingLocation.setLatitude(latitude);
+              startingLocation.setLongitude(longitude);
             }else{
-
                 // calculate difference between old location and new location
                 calculateDistance(latitude,longitude);
 
@@ -142,16 +151,23 @@ public class LocationService extends Service implements LocationListener {
             //if(newLocation.hasSpeed()){
                // Log.i("trackerapp","speed : " + String.valueOf(newLocation.getSpeed()));
 
+            //update previous
+            previousLat = newLat;
+            previousLong = newLong;
+
             }
 
-    // starts adding user
-    public void addEntry () {
+    // called when user stoped running , logging session details in the database starts
 
+    public void runningStoped () {
 
-            Log.i("trackerapp","in addEntry function");
+            totalDistance = getTotalDistance();
+            totalTime = getTotalTime();
+
+            Log.i("trackerapp","user stopped running");
             DB_Handler dbHandler = new DB_Handler(this,"history", null,1);
 
-            // creates a new recipe object
+            // creates a new entry object
             //Entry_Sructure entry_sructure = new Recipe(recipeTitle,recipeContent);
 
             //dbHandler.addRecipe(recipe);
@@ -164,9 +180,29 @@ public class LocationService extends Service implements LocationListener {
 
     }
 
+    private float getTotalTime() {
+
+        return 0;
+    }
+
+    private float getTotalDistance() {
+
+        lastLocation = new Location("last");
+
+        lastLocation.setLatitude(previousLat);
+        lastLocation.setLongitude(previousLong);
+
+        float distance = startingLocation.distanceTo(lastLocation);
+
+        return distance;
+    }
+
     // starts getting information about location as the user is running
     public void runningStarted(){
 
+        Log.i("trackerapp","user started running");
+
+        startUpdatingLocation();
 
     }
 }

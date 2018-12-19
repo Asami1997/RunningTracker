@@ -1,4 +1,4 @@
-package com.example.ahmadsami.runningtracker.ContentProvider;
+package com.example.ahmadsami.runningtracker.contentprovider;
 
 // THIS CLASS IS TAKEN FROM LAB 5
 
@@ -17,7 +17,7 @@ import com.example.ahmadsami.runningtracker.DB_Handler;
 
 public class Tracker_Content_Provider extends ContentProvider {
 
-    private static final String AUTHORITY = "com.example.ahmadsami.runningtracker.ContentProvider";
+    private static final String AUTHORITY = "com.example.ahmadsami.runningtracker.contentprovider";
     private static final String TRACKER_TABLE = "history";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TRACKER_TABLE);
 
@@ -31,6 +31,9 @@ public class Tracker_Content_Provider extends ContentProvider {
     {
         sURIMatcher.addURI(AUTHORITY,TRACKER_TABLE, HISTORY);
         sURIMatcher.addURI(AUTHORITY, TRACKER_TABLE +"/#", TRACKER_ID);
+    }
+
+    public Tracker_Content_Provider() {
     }
 
     public Tracker_Content_Provider(DB_Handler db_handler) {

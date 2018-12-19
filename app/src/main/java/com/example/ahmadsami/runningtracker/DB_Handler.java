@@ -3,12 +3,11 @@ package com.example.ahmadsami.runningtracker;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
-import com.example.ahmadsami.runningtracker.ContentProvider.Tracker_Content_Provider;
+import com.example.ahmadsami.runningtracker.contentprovider.Tracker_Content_Provider;
 
 import java.util.Random;
 
@@ -27,7 +26,6 @@ public class DB_Handler extends SQLiteOpenHelper {
     public static final String COLUMN_TRACKER_TIME = "tracker_time";
     public static final String COLUMN_TRACKER_DISTANCE = "tracker_distance";
     public static final String COLUMN_TRACKER_DATE = "tracker_date";
-    public static final String COLUMN_TRACKER_STEPS = "tracker_steps";
 
 
     public static ContentResolver contentResolver;
@@ -53,7 +51,7 @@ public class DB_Handler extends SQLiteOpenHelper {
 
         // creates SQL statement to create table recipes
         String CREATE_RECIPES_TABLE = "CREATE TABLE " + TABLE_TRACKER + "(" + COLUMN_TRACKER_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_TRACKER_TIME + " TEXT," + COLUMN_TRACKER_DISTANCE + " TEXT," + COLUMN_TRACKER_DATE + "TEXT" + COLUMN_TRACKER_STEPS + "TEXT" + ")";
+                COLUMN_TRACKER_TIME + " TEXT," + COLUMN_TRACKER_DISTANCE + " TEXT," + COLUMN_TRACKER_DATE + "TEXT" + ")";
 
         // execute create table sql statement
         sqLiteDatabase.execSQL(CREATE_RECIPES_TABLE);
@@ -87,8 +85,6 @@ public class DB_Handler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_TRACKER_DISTANCE,entry.getTracker_distance());
 
         contentValues.put(COLUMN_TRACKER_DATE,entry.getTracker_date());
-
-        contentValues.put(COLUMN_TRACKER_STEPS,entry.getTracker_steps());
 
         contentResolver.insert(Tracker_Content_Provider.CONTENT_URI,contentValues);
 

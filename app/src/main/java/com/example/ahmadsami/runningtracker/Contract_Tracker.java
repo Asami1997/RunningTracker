@@ -12,5 +12,4 @@ public class Contract_Tracker {
     public static final String COLUMN_TRACKER_TIME = "tracker_time";
     public static final String COLUMN_TRACKER_DISTANCE = "tracker_distance";
     public static final String COLUMN_TRACKER_DATE = "tracker_date";
-    public static final String COLUMN_TRACKER_STEPS = "tracker_steps";
 }

@@ -3,7 +3,7 @@
     package="com.example.ahmadsami.runningtracker">
 
     <uses-permission android:name="android.permission.ACCESS_GPS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -26,8 +26,15 @@
         <service
             android:name=".LocationService"
             android:enabled="true"
-            android:exported="false">
-        </service>
+            android:exported="false"></service>
+
+        <provider
+            android:name=".contentprovider.Tracker_Content_Provider"
+            android:authorities="com.example.ahmadsami.runningtracker.contentprovider"
+            android:enabled="true"
+            android:exported="true"></provider>
+
+        <activity android:name=".Statistics"></activity>
     </application>
 
 </manifest>

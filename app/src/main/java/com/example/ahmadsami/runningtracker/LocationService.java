@@ -12,19 +12,22 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class LocationService extends Service implements LocationListener {
     int intial = 0;
     double previousLat ;
     double previousLong ;
-    float totalDistance;
+    static float totalDistance = 0;
     float totalTime;
     int totalSteps;
     String date;
     Location startingLocation ;
     Location lastLocation ;
     Date intitalTime;
+    Date timeEnd;
     private final IBinder mBinder = new locationServiceBinder();
     public class locationServiceBinder extends Binder {
 
@@ -93,13 +96,18 @@ public class LocationService extends Service implements LocationListener {
 
             if(intial == 0){
 
-              intial++;
+                Log.i("trackerapp","firsttime");
+                intitalTime = Calendar.getInstance().getTime();
+                Log.i("trackerapp",String.valueOf(intitalTime));
+                intial++;
               previousLat = location.getLatitude();
               previousLong = location.getLongitude();
               startingLocation = new Location("start");
               startingLocation.setLatitude(latitude);
               startingLocation.setLongitude(longitude);
             }else{
+
+                intial++;
                 // calculate difference between old location and new location
                 calculateDistance(latitude,longitude);
 
@@ -111,9 +119,9 @@ public class LocationService extends Service implements LocationListener {
 
 
     @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
+           public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        }
+    }
 
         @Override
         public void onProviderEnabled(String provider) {
@@ -138,14 +146,16 @@ public class LocationService extends Service implements LocationListener {
            prevLocation.setLongitude(previousLong);
 
 
+           /*
            float[] results = new float[1];
             Location.distanceBetween(
                     previousLat,previousLong,
                     newLat ,newLong, results);
+*/
 
-
+            totalDistance+=prevLocation.distanceTo(newLocation);
             Log.i("trackerapp","distance to : " + prevLocation.distanceTo(newLocation));
-            Log.i("trackerapp","distance between : " + String.valueOf(results[0]));
+            Log.i("trackerapp","total distance: " + String.valueOf(totalDistance));
 
 
             //if(newLocation.hasSpeed()){
@@ -161,44 +171,58 @@ public class LocationService extends Service implements LocationListener {
 
     public void runningStoped () {
 
-            totalDistance = getTotalDistance();
-            totalTime = getTotalTime();
+            timeEnd = Calendar.getInstance().getTime();
+
+            Log.i("trackerappends","totaldistance" + String.valueOf(totalDistance));
 
             Log.i("trackerapp","user stopped running");
+
             DB_Handler dbHandler = new DB_Handler(this,"history", null,1);
 
+            //get time
+            totalTime = getTotalTime();
+
+            //get date
+            Date c = Calendar.getInstance().getTime();
+            System.out.println("Current time => " + c);
+
+            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+            String formattedDate = df.format(c);
+
+            Log.i("trackerappendsd",formattedDate);
+
             // creates a new entry object
-            //Entry_Sructure entry_sructure = new Recipe(recipeTitle,recipeContent);
+            Entry_Sructure entry_sructure = new Entry_Sructure();
+            //prepare structure to be saved in DB
+            entry_sructure.setTracker_date(formattedDate);
+            entry_sructure.setTracker_distance(String.valueOf(totalDistance));
+            entry_sructure.setTracker_time(String.valueOf(totalTime));
 
-            //dbHandler.addRecipe(recipe);
-
-            // resets textviews
-            //recipeTitleET.setText("");
-            //recipeContentET.setText("");
-            //recipeIDET.setText("");
-
-
+            dbHandler.addEntry(entry_sructure);
     }
 
     private float getTotalTime() {
 
-        return 0;
+        //Log.i("trackerappend",String.valueOf(timeEnd));
+       // Log.i("trackerappends",String.valueOf(intitalTime));
+
+        long diff =timeEnd.getTime() - intitalTime.getTime();
+
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+
+        Log.i("trackerappendt",String.valueOf(seconds));
+        return seconds;
     }
 
-    private float getTotalDistance() {
-
-        lastLocation = new Location("last");
-
-        lastLocation.setLatitude(previousLat);
-        lastLocation.setLongitude(previousLong);
-
-        float distance = startingLocation.distanceTo(lastLocation);
-
-        return distance;
-    }
 
     // starts getting information about location as the user is running
     public void runningStarted(){
+
+        intitalTime = Calendar.getInstance().getTime();
+        Log.i("trackerapp",String.valueOf(intitalTime));
 
         Log.i("trackerapp","user started running");
 

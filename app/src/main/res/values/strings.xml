@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RunningTracker</string>
+    <string name="stats">Statistics</string>
+    <string name="title">Running Tracker</string>
+    <string name="time">Time</string>
+    <string name="distance">Distance</string>
 </resources>

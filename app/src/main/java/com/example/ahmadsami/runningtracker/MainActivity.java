@@ -106,12 +106,13 @@ public class MainActivity extends AppCompatActivity {
     // user started running
     public void startClicked(View view) {
 
-        locationService.addEntry();
+        locationService.runningStarted();
 
     }
     // user stop running
     public void stopClicked(View view) {
 
+        locationService.runningStoped();
     }
 }
 

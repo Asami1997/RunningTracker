@@ -24,11 +24,10 @@
 
     <ImageView
         android:id="@+id/runningPic"
-        android:layout_width="135dp"
-        android:layout_height="117dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="297dp"
+        android:layout_height="168dp"
+        android:layout_marginTop="28dp"
         android:src="@drawable/running"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
@@ -37,8 +36,8 @@
         android:id="@+id/totalTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="332dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="348dp"
         android:text="@string/time"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,18 +48,20 @@
         android:id="@+id/totalDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="332dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="348dp"
         android:text="@string/distance"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+
     <ImageView
         android:id="@+id/startRunning"
         android:layout_width="122dp"
         android:layout_height="110dp"
-        android:layout_marginBottom="88dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="96dp"
         android:onClick="startClicked"
         android:src="@drawable/starticon2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -69,9 +70,9 @@
 
     <ImageView
         android:id="@+id/stopRunning"
-        android:layout_width="122dp"
-        android:layout_height="110dp"
-        android:layout_marginLeft="244dp"
+        android:layout_width="170dp"
+        android:layout_height="127dp"
+        android:layout_marginLeft="256dp"
         android:layout_marginBottom="88dp"
         android:onClick="stopClicked"
         android:src="@drawable/stopicon"
@@ -80,16 +81,17 @@
 
     <Button
         android:id="@+id/statsButton"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:onClick="showStatistics"
         android:text="@string/stats"
+        android:textColor="#fff"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/Base.Widget.AppCompat.Button.Colored"
-        android:textColor="#fff"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

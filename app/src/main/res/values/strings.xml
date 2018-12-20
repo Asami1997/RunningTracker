@@ -4,4 +4,23 @@
     <string name="title">Running Tracker</string>
     <string name="time">Time</string>
     <string name="distance">Distance</string>
+
+    <string name="dayTitle">This Day</string>
+    <string name="dayTime">Time : </string>
+    <string name="dayDistance">Distance : </string>
+    <string name="dayID">ID : </string>
+    <string name="dayDate">Date : </string>
+
+    <string name="allTitle">All Time</string>
+    <string name="allTime">Time : </string>
+    <string name="allDistance">Distance : </string>
+    <string name="allID">ID : </string>
+    <string name="allDate">Date : </string>
+
+    <string name="monthTitle">This Month</string>
+    <string name="monthTime">Time : </string>
+    <string name="monthDistance">Distance : </string>
+    <string name="monthID">ID : </string>
+    <string name="monthDate">Date : </string>
+
 </resources>

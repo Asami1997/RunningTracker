@@ -118,8 +118,6 @@ public class Tracker_Content_Provider extends ContentProvider {
         return false;
     }
 
-
-
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 

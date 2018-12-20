@@ -11,7 +11,6 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -79,13 +78,20 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.i("trackerapp","onbind");
+        Log.i("trackerapp","in service onbind");
 
         return mBinder;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-        @Override
+        Log.i("trackerapp","in service onCreate");
+
+    }
+
+    @Override
         public void onLocationChanged(Location location) {
 
             Log.i("trackerapp","in onLocationChanged");
@@ -157,6 +163,10 @@ public class LocationService extends Service implements LocationListener {
             Log.i("trackerapp","distance to : " + prevLocation.distanceTo(newLocation));
             Log.i("trackerapp","total distance: " + String.valueOf(totalDistance));
 
+            MainActivity.distance_TV.setText("Distance" + "\n" +  String.valueOf(totalDistance));
+
+            //to update time text view
+            getTotalTime();
 
             //if(newLocation.hasSpeed()){
                // Log.i("trackerapp","speed : " + String.valueOf(newLocation.getSpeed()));
@@ -171,13 +181,11 @@ public class LocationService extends Service implements LocationListener {
 
     public void runningStoped () {
 
-            timeEnd = Calendar.getInstance().getTime();
-
             Log.i("trackerappends","totaldistance" + String.valueOf(totalDistance));
 
             Log.i("trackerapp","user stopped running");
 
-            DB_Handler dbHandler = new DB_Handler(this,"history", null,1);
+            DB_Handler dbHandler = new DB_Handler(this,null, null,1);
 
             //get time
             totalTime = getTotalTime();
@@ -195,6 +203,7 @@ public class LocationService extends Service implements LocationListener {
             Entry_Sructure entry_sructure = new Entry_Sructure();
             //prepare structure to be saved in DB
             entry_sructure.setTracker_date(formattedDate);
+            Log.i("trackerappzz",String.valueOf(totalDistance));
             entry_sructure.setTracker_distance(String.valueOf(totalDistance));
             entry_sructure.setTracker_time(String.valueOf(totalTime));
 
@@ -206,6 +215,8 @@ public class LocationService extends Service implements LocationListener {
         //Log.i("trackerappend",String.valueOf(timeEnd));
        // Log.i("trackerappends",String.valueOf(intitalTime));
 
+        timeEnd = Calendar.getInstance().getTime();
+
         long diff =timeEnd.getTime() - intitalTime.getTime();
 
         long seconds = diff / 1000;
@@ -214,6 +225,7 @@ public class LocationService extends Service implements LocationListener {
         long days = hours / 24;
 
         Log.i("trackerappendt",String.valueOf(seconds));
+        MainActivity.time_TV.setText("Time" + "\n" + hours + ":" + minutes + ":" + seconds);
         return seconds;
     }
 

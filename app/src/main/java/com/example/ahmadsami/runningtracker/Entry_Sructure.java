@@ -40,7 +40,7 @@ public class Entry_Sructure {
     }
 
     public void setTracker_date(String date){
-        this.tracker_distance = date;
+        this.tracker_date = date;
     }
 
     public int getTracker_ID(){

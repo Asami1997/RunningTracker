@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.ahmadsami.runningtracker.contentprovider.Tracker_Content_Provider;
 
@@ -51,7 +52,7 @@ public class DB_Handler extends SQLiteOpenHelper {
 
         // creates SQL statement to create table recipes
         String CREATE_RECIPES_TABLE = "CREATE TABLE " + TABLE_TRACKER + "(" + COLUMN_TRACKER_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_TRACKER_TIME + " TEXT," + COLUMN_TRACKER_DISTANCE + " TEXT," + COLUMN_TRACKER_DATE + "TEXT" + ")";
+                COLUMN_TRACKER_TIME + " TEXT," + COLUMN_TRACKER_DISTANCE + " TEXT," + COLUMN_TRACKER_DATE + " TEXT" + ")";
 
         // execute create table sql statement
         sqLiteDatabase.execSQL(CREATE_RECIPES_TABLE);
@@ -83,6 +84,7 @@ public class DB_Handler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_TRACKER_TIME,entry.getTracker_time());
         // insert recipe content
         contentValues.put(COLUMN_TRACKER_DISTANCE,entry.getTracker_distance());
+        Log.i("trackerappdb",entry.getTracker_distance());
 
         contentValues.put(COLUMN_TRACKER_DATE,entry.getTracker_date());
 

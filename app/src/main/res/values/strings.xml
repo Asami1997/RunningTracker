@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">RunningTracker</string>
     <string name="stats">Statistics</string>
+    <string name="tracker">Tracker</string>
     <string name="title">Running Tracker</string>
     <string name="time">Time</string>
     <string name="distance">Distance</string>
@@ -22,5 +23,6 @@
     <string name="monthDistance">Distance : </string>
     <string name="monthID">ID : </string>
     <string name="monthDate">Date : </string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

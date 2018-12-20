@@ -18,25 +18,21 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public LocationService locationService;
+    static public LocationService locationService;
 
+    static public Context context;
     public final static int  MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-    static TextView time_TV;
-    static TextView distance_TV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = this;
         final Intent serviceStart = new Intent(this.getApplication(), LocationService.class);
         this.getApplication().startService(serviceStart);
         this.getApplication().bindService(serviceStart, serviceConnection, Context.BIND_AUTO_CREATE);
-
-        time_TV = findViewById(R.id.totalTime);
-
-        distance_TV = findViewById(R.id.totalDistance);
 
         checkUserPermission();
     }
@@ -110,27 +106,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // user started running
-    public void startClicked(View view) {
-
-        locationService.runningStarted();
-        Toast.makeText(locationService, "Running Started", Toast.LENGTH_SHORT).show();
-
-
-    }
-    // user stop running
-    public void stopClicked(View view) {
-
-        locationService.runningStoped();
-        Toast.makeText(locationService, "Running Stopped", Toast.LENGTH_SHORT).show();
-
-    }
 
     // clicked when the user clicks the statistics button
     public void showStatistics(View view){
 
         Intent statsIntent = new Intent(getApplicationContext(),Statistics.class);
         startActivity(statsIntent);
+    }
+
+    public void showTracker(View view){
+
+        Intent trackerIntent = new Intent(getApplicationContext(),MapsActivity.class);
+        startActivity(trackerIntent);
     }
 }
 

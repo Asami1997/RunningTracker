@@ -3,6 +3,7 @@ package com.example.ahmadsami.runningtracker;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,9 +12,15 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public class LocationService extends Service implements LocationListener {
     int intial = 0;
@@ -148,8 +155,16 @@ public class LocationService extends Service implements LocationListener {
            newLocation.setLatitude(newLat);
            newLocation.setLongitude(newLong);
 
-           prevLocation.setLatitude(previousLat);
-           prevLocation.setLongitude(previousLong);
+           //update google maps
+
+            LatLng userLocation = new LatLng(newLat,newLong);
+            MapsActivity.mMap.clear();
+            MapsActivity.mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
+            MapsActivity.mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
+            MapsActivity.mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
+
+            prevLocation.setLatitude(previousLat);
+            prevLocation.setLongitude(previousLong);
 
 
            /*
@@ -163,7 +178,7 @@ public class LocationService extends Service implements LocationListener {
             Log.i("trackerapp","distance to : " + prevLocation.distanceTo(newLocation));
             Log.i("trackerapp","total distance: " + String.valueOf(totalDistance));
 
-            MainActivity.distance_TV.setText("Distance" + "\n" +  String.valueOf(totalDistance));
+            MapsActivity.distance_TV.setText("Distance" + "\n" +  String.valueOf(totalDistance));
 
             //to update time text view
             getTotalTime();
@@ -225,7 +240,7 @@ public class LocationService extends Service implements LocationListener {
         long days = hours / 24;
 
         Log.i("trackerappendt",String.valueOf(seconds));
-        MainActivity.time_TV.setText("Time" + "\n" + hours + ":" + minutes + ":" + seconds);
+        MapsActivity.time_TV.setText("Time" + "\n" + hours + ":" + minutes + ":" + seconds);
         return seconds;
     }
 
@@ -240,6 +255,13 @@ public class LocationService extends Service implements LocationListener {
 
         startUpdatingLocation();
 
+    }
+
+    @Override
+    public void unbindService(ServiceConnection conn) {
+        super.unbindService(conn);
+
+        Log.i("trackerappun","serviceunbinded");
     }
 }
 

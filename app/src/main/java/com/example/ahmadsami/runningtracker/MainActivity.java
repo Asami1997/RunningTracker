@@ -13,30 +13,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    //initializing variables
     static public LocationService locationService;
-
     static public Context context;
     public final static int  MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
+    public String LOG_ID = "trackerapp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.i(LOG_ID,"in onCreate method");
         context = this;
+        // starting the service and binding it to main activity
         final Intent serviceStart = new Intent(this.getApplication(), LocationService.class);
         this.getApplication().startService(serviceStart);
         this.getApplication().bindService(serviceStart, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        // get user location permission
         checkUserPermission();
     }
 
+    // getting the user permission to access fine location
     private void checkUserPermission() {
 
         // Here, thisActivity is the current activity
@@ -45,19 +49,15 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
             } else {
-                // No explanation needed; request the permission
+                //request the permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                //  MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
             }
@@ -67,11 +67,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public ServiceConnection serviceConnection = new ServiceConnection() {
+    // creating a service connection to be used when starting a service
+    public static ServiceConnection serviceConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
 
                 locationService = ((LocationService.locationServiceBinder) service).getService();
-                Log.i("trackerapp","in service connection app");
+                Log.i("trackerapp","in service connection");
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    // result of user's permission request
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -92,32 +94,51 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Toast.makeText(this, "GPS permission granted", Toast.LENGTH_SHORT).show();
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied
                 }
                 return;
             }
 
-            // other 'case' lines to check for other
             // permissions this app might request.
         }
     }
 
 
-    // clicked when the user clicks the statistics button
+    // called when the user clicks the statistics button
     public void showStatistics(View view){
 
+        Log.i(LOG_ID,"statistics button clicked");
+        // start the statistics activity
         Intent statsIntent = new Intent(getApplicationContext(),Statistics.class);
         startActivity(statsIntent);
     }
 
+    // called when the user clicks on the tracker button
     public void showTracker(View view){
 
+        Log.i(LOG_ID,"tracker button clicked");
+        // starts the tracker activity
         Intent trackerIntent = new Intent(getApplicationContext(),MapsActivity.class);
         startActivity(trackerIntent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(LOG_ID,"in onDestroy method");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(LOG_ID,"in onStop method");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(LOG_ID,"in onStart method");
     }
 }
 

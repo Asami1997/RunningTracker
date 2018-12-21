@@ -20,21 +20,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 
 public class LocationService extends Service implements LocationListener {
+
+                        //initializing variables
+
     int intial = 0;
     double previousLat ;
     double previousLong ;
     static float totalDistance = 0;
     float totalTime;
-    int totalSteps;
     String date;
     Location startingLocation ;
-    Location lastLocation ;
     Date intitalTime;
     Date timeEnd;
+    public String LOG_ID = "trackerapp";
     private final IBinder mBinder = new locationServiceBinder();
+    // binder class
     public class locationServiceBinder extends Binder {
 
         LocationService getService() {
@@ -43,37 +45,25 @@ public class LocationService extends Service implements LocationListener {
         }
     }
 
+    // will start listening to user's location changes
     public void startUpdatingLocation() {
 
-        Log.i("trackerapp","in start update location function");
+        Log.i(LOG_ID,"in start update location function");
 
         LocationManager locationManager =
                 (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         getSystemService(LOCATION_SERVICE);
 
+        // location listener
         LocationService locationListener = new LocationService();
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        criteria.setAltitudeRequired(false);
-        criteria.setSpeedRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setBearingRequired(false);
 
-        //API level 9 and up
-        criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
-        criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
-
-       // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
-       // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, this);
-      // locationManager.requestLocationUpdates(1000,1,criteria,this,null);
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                     5, // minimum time interval between updates
                     5, // minimum distance between updates, in metres
                     locationListener);
         } catch (SecurityException e) {
-            Log.d("trackerapp", e.toString());
+            Log.d(LOG_ID, e.toString());
         }
 
     }
@@ -85,7 +75,7 @@ public class LocationService extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.i("trackerapp","in service onbind");
+        Log.i(LOG_ID,"in service onbind");
 
         return mBinder;
     }
@@ -94,38 +84,50 @@ public class LocationService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
 
-        Log.i("trackerapp","in service onCreate");
+        Log.i(LOG_ID,"in service onCreate");
 
     }
 
     @Override
         public void onLocationChanged(Location location) {
 
-            Log.i("trackerapp","in onLocationChanged");
+        // listen to changes only when the user is running
+        if(MapsActivity.runningStatus){
+
+            Log.i(LOG_ID,"in onLocationChanged");
+            // get the user's location latitude
             double latitude=location.getLatitude();
+            // get the user's location longitude
             double longitude=location.getLongitude();
             String msg="New Latitude: "+latitude + "New Longitude: "+longitude;
-            Log.i("trackerapp",msg);
+            Log.i(LOG_ID,msg);
 
+            // when its the first time location listener is called
             if(intial == 0){
 
-                Log.i("trackerapp","firsttime");
                 intitalTime = Calendar.getInstance().getTime();
-                Log.i("trackerapp",String.valueOf(intitalTime));
+                Log.i(LOG_ID,"initial time : " + String.valueOf(intitalTime));
                 intial++;
-              previousLat = location.getLatitude();
-              previousLong = location.getLongitude();
-              startingLocation = new Location("start");
-              startingLocation.setLatitude(latitude);
-              startingLocation.setLongitude(longitude);
+                previousLat = location.getLatitude();
+                previousLong = location.getLongitude();
+                startingLocation = new Location("start");
+                startingLocation.setLatitude(latitude);
+                startingLocation.setLongitude(longitude);
             }else{
 
                 intial++;
                 // calculate difference between old location and new location
                 calculateDistance(latitude,longitude);
 
-                Log.i("trackerapp","speed" + location.getSpeed() * 0.514);
+                Log.i(LOG_ID,"speed" + location.getSpeed() * 0.514);
             }
+        }else{
+
+            // reset
+            totalDistance = 0;
+            totalTime = 0;
+        }
+
 
     }
 
@@ -148,7 +150,7 @@ public class LocationService extends Service implements LocationListener {
 
         private void calculateDistance(double newLat,double newLong) {
 
-
+           // create location objects for the new and previous locations
            Location prevLocation = new Location("point A");
            Location newLocation  = new Location("point B");
 
@@ -166,25 +168,15 @@ public class LocationService extends Service implements LocationListener {
             prevLocation.setLatitude(previousLat);
             prevLocation.setLongitude(previousLong);
 
-
-           /*
-           float[] results = new float[1];
-            Location.distanceBetween(
-                    previousLat,previousLong,
-                    newLat ,newLong, results);
-*/
-
+            // calculate distance difference
             totalDistance+=prevLocation.distanceTo(newLocation);
-            Log.i("trackerapp","distance to : " + prevLocation.distanceTo(newLocation));
-            Log.i("trackerapp","total distance: " + String.valueOf(totalDistance));
+            Log.i(LOG_ID,"total distance: " + String.valueOf(totalDistance));
 
+            // update the marker on google map
             MapsActivity.distance_TV.setText("Distance" + "\n" +  String.valueOf(totalDistance));
 
             //to update time text view
             getTotalTime();
-
-            //if(newLocation.hasSpeed()){
-               // Log.i("trackerapp","speed : " + String.valueOf(newLocation.getSpeed()));
 
             //update previous
             previousLat = newLat;
@@ -196,9 +188,7 @@ public class LocationService extends Service implements LocationListener {
 
     public void runningStoped () {
 
-            Log.i("trackerappends","totaldistance" + String.valueOf(totalDistance));
-
-            Log.i("trackerapp","user stopped running");
+            Log.i(LOG_ID,"user stopped running");
 
             DB_Handler dbHandler = new DB_Handler(this,null, null,1);
 
@@ -212,34 +202,33 @@ public class LocationService extends Service implements LocationListener {
             SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
             String formattedDate = df.format(c);
 
-            Log.i("trackerappendsd",formattedDate);
-
             // creates a new entry object
             Entry_Sructure entry_sructure = new Entry_Sructure();
             //prepare structure to be saved in DB
             entry_sructure.setTracker_date(formattedDate);
-            Log.i("trackerappzz",String.valueOf(totalDistance));
             entry_sructure.setTracker_distance(String.valueOf(totalDistance));
             entry_sructure.setTracker_time(String.valueOf(totalTime));
 
+            // store in database
             dbHandler.addEntry(entry_sructure);
     }
 
     private float getTotalTime() {
 
-        //Log.i("trackerappend",String.valueOf(timeEnd));
-       // Log.i("trackerappends",String.valueOf(intitalTime));
-
+        // get the time of stooping
         timeEnd = Calendar.getInstance().getTime();
 
+        // calculate the time difference between the initial and the end running session time
         long diff =timeEnd.getTime() - intitalTime.getTime();
 
+        // calculate minutes , hours and days using seconds
         long seconds = diff / 1000;
         long minutes = seconds / 60;
         long hours = minutes / 60;
         long days = hours / 24;
 
-        Log.i("trackerappendt",String.valueOf(seconds));
+        Log.i(LOG_ID,"total seconds" + String.valueOf(seconds));
+        // update the time text view
         MapsActivity.time_TV.setText("Time" + "\n" + hours + ":" + minutes + ":" + seconds);
         return seconds;
     }
@@ -248,20 +237,21 @@ public class LocationService extends Service implements LocationListener {
     // starts getting information about location as the user is running
     public void runningStarted(){
 
+        // get initial time when the user starts running
         intitalTime = Calendar.getInstance().getTime();
-        Log.i("trackerapp",String.valueOf(intitalTime));
 
-        Log.i("trackerapp","user started running");
+        Log.i(LOG_ID,"user started running");
 
+        // start update location when the user starts
         startUpdatingLocation();
 
     }
 
     @Override
     public void unbindService(ServiceConnection conn) {
+        // unbind service
         super.unbindService(conn);
-
-        Log.i("trackerappun","serviceunbinded");
+        Log.i(LOG_ID,"serviceunbinded");
     }
 }
 
